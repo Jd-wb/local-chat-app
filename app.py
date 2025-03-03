@@ -2,6 +2,7 @@ import json
 import os
 from http.server import SimpleHTTPRequestHandler, HTTPServer
 from urllib.parse import parse_qs
+import subprocess  # To run scripts or commands
 
 # File to store chat rooms and their messages
 CHAT_ROOMS_FILE = "chat_rooms.json"
@@ -88,6 +89,23 @@ class ChatHTTPRequestHandler(SimpleHTTPRequestHandler):
             else:
                 self.send_response(404)
                 self.end_headers()
+
+    # New POST request to start the server when the spacebar is pressed
+    def do_POST_start_server(self):
+        if self.path == "/start-server":
+            try:
+                # You could call subprocess to run your app.py
+                # Alternatively, you can adjust this to match what you need to trigger
+                subprocess.Popen(['python3', 'app.py'])  # Start the app.py script
+                self.send_response(200)
+                self.send_header("Content-type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps({"message": "Server started!"}).encode())
+            except Exception as e:
+                self.send_response(500)
+                self.send_header("Content-type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps({"error": str(e)}).encode())
 
 def run_server():
     server_address = ("", 8000)
