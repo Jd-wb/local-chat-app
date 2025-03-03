@@ -85,3 +85,19 @@ document.addEventListener("keydown", function(event) {
         alert("You need to run the Python server manually! Use 'python app.py' in the terminal.");
     }
 });
+
+document.addEventListener('keydown', function (event) {
+    if (event.code === 'Space') {
+        // Send a POST request to start the server
+        fetch('/start-server', {
+            method: 'POST',
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data.message);  // Log success message or do something else
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+});
