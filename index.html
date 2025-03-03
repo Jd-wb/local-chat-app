@@ -15,6 +15,7 @@
             <button id="joinButton">Join Chat</button>
             <button id="createButton">Create Chat</button>
             <p id="instructions">Press space to run the server! But first, make sure it's running!</p>
+            <p id="serverStatus"></p> <!-- To show the server initiation status -->
         </div>
 
         <!-- Chat UI (hidden initially) -->
@@ -28,15 +29,26 @@
     <script>
         document.addEventListener('keydown', function (event) {
             if (event.code === 'Space') {
+                // Display the "Server Initiated" message
+                document.getElementById("serverStatus").textContent = "Server is initiating... Please wait.";
+                
                 // Send a POST request to start the server when space is pressed
                 fetch('/start-server', {
                     method: 'POST',
                 })
                 .then(response => response.json())
                 .then(data => {
-                    console.log(data.message);  // Log success message or handle appropriately
+                    if (data.message === "Server started!") {
+                        document.getElementById("serverStatus").textContent = "Server Initiated! Redirecting to chat room...";
+                        setTimeout(() => {
+                            // After 2 seconds, redirect to the chat interface
+                            document.getElementById("login-container").style.display = "none"; // Hide login
+                            document.getElementById("chat-ui").style.display = "block"; // Show chat UI
+                        }, 2000);
+                    }
                 })
                 .catch(error => {
+                    document.getElementById("serverStatus").textContent = "Error starting the server.";
                     console.error('Error:', error);
                 });
             }
@@ -63,6 +75,7 @@
                             chatCode = code;
                             loadMessages();
                             chatUI.style.display = 'block';
+                            document.getElementById("login-container").style.display = "none"; // Hide login
                         } else {
                             alert(data.message);
                         }
@@ -81,6 +94,7 @@
                             chatCode = code;
                             loadMessages();
                             chatUI.style.display = 'block';
+                            document.getElementById("login-container").style.display = "none"; // Hide login
                         } else {
                             alert(data.message);
                         }
