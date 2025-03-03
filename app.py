@@ -90,13 +90,11 @@ class ChatHTTPRequestHandler(SimpleHTTPRequestHandler):
                 self.send_response(404)
                 self.end_headers()
 
-    # New POST request to start the server when the spacebar is pressed
-    def do_POST_start_server(self):
-        if self.path == "/start-server":
+        # Handle the /start-server route here
+        elif self.path == "/start-server":
             try:
-                # You could call subprocess to run your app.py
-                # Alternatively, you can adjust this to match what you need to trigger
-                subprocess.Popen(['python3', 'app.py'])  # Start the app.py script
+                # Start the server with subprocess
+                subprocess.Popen(['python3', 'app.py'])  # Start app.py
                 self.send_response(200)
                 self.send_header("Content-type", "application/json")
                 self.end_headers()
